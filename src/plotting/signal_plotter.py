@@ -165,3 +165,62 @@ class SignalPlotter:
         )
 
         plt.close()
+
+
+    @staticmethod
+    def save_stacked_signals(
+            signals,
+            labels,
+            output_file,
+            fs=None,
+            figsize=(12, 8)
+    ):
+
+        output_file = Path(output_file)
+
+        output_file.parent.mkdir(
+            parents=True,
+            exist_ok=True
+        )
+
+        fig, axes = plt.subplots(
+            len(signals),
+            1,
+            figsize=figsize,
+            sharex=True
+        )
+
+    
+
+        for ax, signal, label in zip(
+                axes,
+                signals,
+                labels):
+
+            if fs:
+                x = np.arange(len(signal)) / fs
+                ax.set_ylabel("mV")
+            else:
+                x = np.arange(len(signal))
+
+            ax.plot(
+                x,
+                signal,
+                linewidth=1
+            )
+
+            ax.set_title(label)
+
+            ax.grid(True)
+
+        axes[-1].set_xlabel("Time [s]")
+
+        plt.tight_layout()
+
+        plt.savefig(
+            output_file,
+            dpi=300,
+            bbox_inches="tight"
+        )
+
+        plt.close()
